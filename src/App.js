@@ -3,15 +3,13 @@ import './App.css';
 import { Component } from 'react';
 
 class Cell extends Component {
-  state = {
-    number: 1
-  }
   render() {
     return <div
-              onClick={(e) => {
-                this.setState({
-                  number: (this.props.number + 1) % 5
-                })
+              onClick={e => {
+                if (this.props.isInitial) {
+                  return;
+                }
+                this.props.onChange((this.props.number + 1) % 5)
               }}
               className={`cell ${this.props.isInitial ? 'initial' : ''}`}
             >
@@ -22,12 +20,12 @@ class Cell extends Component {
 
 class Board extends Component {
   state = {
-    board: [[1,2,3,4], [1,2,3,4], [1,2,3,4], [1,2,3,4]],
+    board: [[1,2,3,4], [3,4,0,0], [2,0,4,0], [4,0,0,2]],
     initial: [
-      [true, false, true, false],
-      [true, false, true, false],
-      [true, false, true, false],
-      [true, false, true, false],
+      [true, true, true, true],
+      [true, true, false, false],
+      [true, false, false, true],
+      [false, true, true, false],
     ]
   }
   render() {
@@ -40,6 +38,13 @@ class Board extends Component {
                 key={`cell-${i}-${j}`}
                 number={number}
                 isInitial={this.state.initial[i][j]}
+                onChange={(newNumber) => {
+                  const { board } = this.state;
+                  board[i][j] = newNumber;
+                  this.setState({
+                    board
+                  })
+                }}
               />
             ))
           )
